@@ -1,57 +1,55 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-07-07 17:39⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-07-08 19:39⟧
 ----------------------------------------------------------
-🚫 发现 𝐁𝐔𝐆 请反馈: @Shawn_KOP_bot
+🛠 发现 𝐁𝐔𝐆 请反馈: @Shawn_KOP_bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
 🗣 🆃🄷🄰🄽🄺🅂 🆃🄾  @Jamie CHIEN, @M**F**, @c0lada
 
 🤖 主要功能: 
-A. 将各格式的服务器订阅解析成 𝐐𝐮𝐚𝐧𝐭𝐮𝐦𝐮𝐥𝐭 𝐗 格式引用
-✔︎ 支持 Vmess/SS(R/D)/Trojan/QuanX/Surge/HTTP(s) 订阅
+A. 将各格式的服务器订阅解析成 𝐐𝐮𝐚𝐧𝐭𝐮𝐦𝐮𝐥𝐭 𝐗 格式
+✔︎ 支持 𝒗𝒎𝒆𝒔𝒔/𝒔𝒔(𝒓/𝒅)/𝒕𝒓𝒐𝒋𝒂𝒏/𝒒𝒖𝒂𝒏𝒙/𝒔𝒖𝒓𝒈𝒆/𝒉𝒕𝒕𝒑(𝒔) 订阅
 ✔︎ 提供说明 1⃣️ 中的可选个性化参数(筛选、重命名 等)
-B. rewrite(重写) /filter(分流) 的转换&筛选 
-✔︎ 用于禁用远程引用中某(几)项 rewrite/hostname/filter
-✔︎ Surge 类型规则 list(不含策略组)的解析与使用
-✔︎ Surge 模块/配置 URL-REGEX、302(7) 复写、Script 的解析
+B. 𝗿𝗲𝘄𝗿𝗶𝘁𝗲(重写) /𝗳𝗶𝗹𝘁𝗲𝗿(分流) 的 转换&筛选 
+✔︎ 用于禁用远程引用中某(几)项 𝗿𝗲𝘄𝗿𝗶𝘁𝗲/𝗵𝗼𝘀𝘁𝗻𝗮𝗺𝗲/𝗳𝗶𝗹𝘁𝗲𝗿
+✔︎ 𝐒𝐮𝐫𝐠𝐞 类型规则 𝗹𝗶𝘀𝘁(无策略组)的解析与使用
+✔︎ 𝐒𝐮𝐫𝐠𝐞 模块/配置 𝐮𝐫𝐥-𝐫𝐞𝐠𝐞𝐱/𝐬𝐜𝐫𝐢𝐩𝐭/𝐫𝐞𝐰𝐫𝐢𝐭𝐞(302/307) 的解析
 ----------------------------------------------------------
-0️⃣ ⟦原始订阅链接⟧ 后加 "#" , 不同参数用 "&" 连接: 
-⚠️ ☞ https://mysub.com#in=香港+台湾&emoji=1&tfo=1
-❖ 本地资源引用, 请将参数 "#in=xxx.." 填入资源文件第一行 ❖
+0️⃣ ⟦原始链接⟧ 后加 "#" 使用, 不同参数用 "&" 连接: 
+⚠️ ☞ 𝐡𝐭𝐭𝐩𝐬://𝐦𝐲𝐬𝐮𝐛.𝐜𝐨𝐦#𝗶𝗻=香港+台湾&𝗲𝗺𝗼𝗷𝗶=1&𝘁𝗳𝗼=1
+❖ 本地资源引用, 请将参数 "#𝗶𝗻=𝘅𝘅𝘅..." 填入资源文件第一行 ❖
 
-1️⃣ ⟦server 节点⟧ ➠ 参数说明:
-⦿ info=1, 开启通知提示机场 ✈️ 流量信息(如有提供);
-⦿ emoji=1,2 或 -1, 为添加/删除节点名中的地区 emoji 旗帜;
-    ❖ 国行设备请用 emoji=2
-⦿ udp=1, tfo=1, tls13=1, 分别开启 udp-relay/fast-open/tls1.3;
-⦿ cert=0, 强制"tls-verification=false" 跳过证书验证;
-⦿ in, out, 分别为 保留/删除 节点, 多参数用 "+" 连接(逻辑"或"), 逻辑"与"用 "." 连接;
-    ❖ 支持中文(字母大小写忽略), 操作以下特殊字符时请先替换
-        ∎ "+"☞"%2B", 空格☞"%20", "&"☞"%26", "."☞"\."
-    ❖ 如 "in=香港.IPLC.0\.2倍率+台湾&out=香港%20BGP"
-⦿ regex=正则筛选(字母大小写忽略), 请自行折腾正则表达式;
-    ❖ 可与 in/out 参数搭配使用，in/out 会优先执行;
+1️⃣ ⟦𝐬𝐞𝐫𝐯𝐞𝐫 节点⟧ ➠ 参数说明:
+⦿ 𝗶𝗻𝗳𝗼=1, 开启通知提示机场 ✈️ 流量信息(如有提供);
+⦿ 𝗲𝗺𝗼𝗷𝗶=1(国行设备用2)/-1, 添加/删除节点名内地区旗帜;
+⦿ 𝘂𝗱𝗽=1, 𝘁𝗳𝗼=1, 𝘁𝗹𝘀13=1, 分别开启 𝐮𝐝𝐩-𝐫𝐞𝐥𝐚𝐲/𝐟𝐚𝐬𝐭-𝐨𝐩𝐞𝐧/𝐭𝐥𝐬1.3;
+⦿ 𝗰𝗲𝗿𝘁=0, 强制"𝐭𝐥𝐬-𝐯𝐞𝐫𝐢𝐟𝐢𝐜𝐚𝐭𝐢𝐨𝐧=𝐟𝐚𝐥𝐬𝐞" 跳过证书验证;
+⦿ 𝗶𝗻, 𝗼𝘂𝘁, 分别为 保留/删除 节点;
+    ❖ 多参数(逻辑"或")用 "+", 逻辑"与"用 "." 表示;
+    ❖ 支持中文, 操作以下特殊字符时请先替换
+        ∎ "+"⇒"%2B", 空格⇒"%20", "&"⇒"%26", "."⇒"\."
+    ❖ 示范: "𝐢𝐧=香港.0\.2倍率+台湾&𝐨𝐮𝐭=香港%20𝐁𝐆𝐏"
+⦿ 𝗿𝗲𝗴𝗲𝘅, 正则筛选, 请自行折腾正则表达式;
+    ❖ 可与 𝗶𝗻/𝗼𝘂𝘁 参数搭配使用，𝗶𝗻/𝗼𝘂𝘁 会优先执行;
     ❖ 对节点完整信息匹配(端口、加密等), 而不只是节点名
-⦿ rename 重命名、删除字段, "旧名@新名", "删除字段1.删除字段2☠️", 以及 "前缀@", "@后缀",用 "+" 连接多个参数;
-    ❖ 如 "rename=香港@HK+[SS]@+@[1X]+倍率.流量☠️"
-    ❖ 支持中文(字母大小写忽略), 操作以下特殊字符时请先替换
-        ∎ "@"☞"%40","+"☞"%2B", 空格☞"%20", "&"☞"%26"
-    ❖ 字段删除操作中, "."点符号被征用, 用 "\." 来操作
-        ∎ 如删除 "0.2", 请用"0\.2" 代替
-⦿ delreg, 利用正则参数来删除节点名中的字段(⚠️ 慎用)
-    ❖ 如 "delreg=(标准|高级).*HKT"
-⦿ sort=1, -1, x,分别根据节点名 正序/逆序/随机 排序;
+⦿ 𝗿𝗲𝗻𝗮𝗺𝗲, 重命名: "旧名@新名", "前缀@", "@后缀", 用 "+" 连接多个参数;
+    ❖ 支持中文, 操作以下特殊字符时请先替换
+        ∎ "@"⇒"%40","+"⇒"%2B", 空格⇒"%20", "&"⇒"%26"
+    ❖ 删除字段: "字段1.字段2☠️", 想删除 "." 时用 "\." 替代
+    ❖ 示范: "𝐫𝐞𝐧𝐚𝐦𝐞=香港@𝐇𝐊+[𝐒𝐒]@+@[1𝐗]+流量.0\.2☠️"
+⦿ 𝗱𝗲𝗹𝗿𝗲𝗴, 利用正则参数来删除节点名中的字段(⚠️ 慎用)
+⦿ 𝘀𝗼𝗿𝘁=1, -1, x,分别根据节点名 正序/逆序/随机 排序;
 
-2⃣️ ⟦rewrite 重写⟧/⟦filter 分流⟧ ➠ 参数说明:
-⦿ in, out, 根据关键词 保留/禁用 相关的规则、重写;
-⦿ inhn, outhn, “保留/删除”主机名(hostname);
-⦿ dst=regex/script，分别为只保留 Surge-module/profile 中的 url-regex/script(302/307), 默认全部保留;
-⦿ 分流规则另有 "policy=xxx" 参数, 可用于直接指定策略组，或为 Surge 类型 rule-set 生成策略组(默认"Shawn"策略组);
-⦿ 示范: 禁用某重写引用中的 "淘宝比价 js" 以及 "weibo 的 js"
-⚠️ ☞  https://myrewrite.list#out=tb_price.js+wb_ad.js
+2⃣️ ⟦𝐫𝐞𝐰𝐫𝐢𝐭𝐞 重写⟧/⟦𝐟𝐢𝐥𝐭𝐞𝐫 分流⟧ ➠ 参数说明:
+⦿ 𝗶𝗻, 𝗼𝘂𝘁, 根据关键词 保留/禁用 相关的规则、重写;
+⦿ 𝗶𝗻𝗵𝗻, 𝗼𝘂𝘁𝗵𝗻, “保留/删除”主机名(𝒉𝒐𝒔𝒕𝒏𝒂𝒎𝒆);
+⦿ 𝗱𝘀𝘁=𝗿𝗲𝗴𝗲𝘅/𝘀𝗰𝗿𝗶𝗽𝘁，分别为只保留 𝐒𝐮𝐫𝐠𝐞-𝐦𝐨𝐝𝐮𝐥𝐞/𝐩𝐫𝐨𝐟𝐢𝐥𝐞 中的 𝐮𝐫𝐥-𝐫𝐞𝐠𝐞𝐱/𝐬𝐜𝐫𝐢𝐩𝐭(302/307), 默认全部保留;
+⦿ 分流规则另有 "𝗽𝗼𝗹𝗶𝗰𝘆=𝘅𝘅𝘅" 参数, 可用于直接指定策略组，或为 𝐒𝐮𝐫𝐠𝐞 类型 𝗿𝘂𝗹𝗲-𝘀𝗲𝘁 生成策略组(默认"𝐒𝐡𝐚𝐰𝐧"策略组);
+⦿ 示范: 禁用重写引用中 "淘宝比价 js" 以及 "weibo" 的 js 同主机名
+ 𝐡𝐭𝐭𝐩𝐬://𝐦𝐲𝐥𝐢𝐬𝐭#𝒐𝒖𝒕=𝒕𝒃_𝒑𝒓𝒊𝒄𝒆.𝒋𝒔+𝒘𝒃_𝒂𝒅.𝒋𝒔&𝒐𝒖𝒕𝒉𝒏=𝒘𝒆𝒊𝒃𝒐
 
-3⃣️ 通知参数 ntf=0/1, 用于 关闭/打开 资源解析器的提示通知
-⦿ rewrite/filter 默认“开启”通知提示, 以防规则误删除
-⦿ server 资源解析则默认”关闭“通知提示
+3⃣️ 通知参数 𝗻𝘁𝗳=0/1, 用于 关闭/打开 资源解析器的提示通知
+⦿ 𝗿𝗲𝘄𝗿𝗶𝘁𝗲/𝗳𝗶𝗹𝘁𝗲𝗿 默认“开启”通知提示, 以防规则误删除
+⦿ 𝘀𝗲𝗿𝘃𝗲𝗿 资源解析则默认”关闭“通知提示
 ----------------------------------------------------------
  */
 
@@ -79,9 +77,27 @@ var link0=$resource.link;
 //const $done=function(snt){return snt}
 //parameters
 var para=(link0.indexOf("http")!=-1 && link0.indexOf("://")!=-1)? link0:link0+content0.split("\n")[0];
+var para1=para.slice(para.indexOf("#")+1) //防止参数中其它位置也存在"#"
 var mark0=para.indexOf("#")!=-1? true:false;
-var type0=Type_Check(content0);
-para1=para.slice(para.indexOf("#")+1) //防止参数中其它位置也存在"#"
+const subinfo=$resource.info;
+const subtag=$resource.tag!=undefined? $resource.tag:"";
+var Pinfo=mark0 && para1.indexOf("info=")!=-1? para1.split("info=")[1].split("&")[0]:0;
+var ntf_flow=0;
+//常用量
+const Base64=new Base64Code();
+const escapeRegExp = str => str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'); //处理特殊符号以便正则匹配使用
+const qxpng="https://raw.githubusercontent.com/crossutility/Quantumult-X/master/quantumult-x.png"
+const subinfo_link = {"open-url": "https://t.me/QuanX_API", "media-url" :"https://shrtm.nu/ebAr"};
+const rwrite_link = {"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/x3o2"}
+const rwhost_link = {"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/0n5J"}
+const rule_link={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/cpHD"}
+const nan_link={"open-url":link0.split("#")[0], "media-url": qxpng}
+const sub_link={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/ebAr"}
+const subinfo_link1={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/uo13"}
+
+SubFlow() //流量通知
+var type0=Type_Check(content0); //  类型
+//$notify(type0)
 var Pin0=mark0 && para1.indexOf("in=")!=-1? (para1.split("in=")[1].split("&")[0].split("+")).map(decodeURIComponent):null;
 var Pout0=mark0 && para1.indexOf("out=")!=-1? (para1.split("out=")[1].split("&")[0].split("+")).map(decodeURIComponent):null;
 var Preg=mark0 && para1.indexOf("regex=")!=-1? decodeURIComponent(para1.split("regex=")[1].split("&")[0]):null; //server正则过滤参数
@@ -91,7 +107,6 @@ var Phout0=mark0 && para1.indexOf("outhn=")!=-1? (para1.split("outhn=")[1].split
 var Pemoji=mark0 && para1.indexOf("emoji=")!=-1? para1.split("emoji=")[1].split("&")[0]:null;
 var Pudp0=mark0 && para1.indexOf("udp=")!=-1? para1.split("udp=")[1].split("&")[0]:0;
 var Ptfo0=mark0 && para1.indexOf("tfo=")!=-1? para1.split("tfo=")[1].split("&")[0]:0;
-var Pinfo=mark0 && para1.indexOf("info=")!=-1? para1.split("info=")[1].split("&")[0]:0;
 var Prname=mark0 && para1.indexOf("rename=")!=-1? para1.split("rename=")[1].split("&")[0].split("+"):null;
 var Prrname=mark0 && para1.indexOf("rrname=")!=-1? para1.split("rrname=")[1].split("&")[0].split("+"):null;
 var Ppolicy=mark0 && para1.indexOf("policy=")!=-1? decodeURIComponent(para1.split("policy=")[1].split("&")[0]):"Shawn";
@@ -107,38 +122,27 @@ var pfihn=Phin0? "inhn="+Phin0.join(", ")+",  ":""
 var pfohn=Phout0? "outhn="+Phout0.join(", "):""
 var flow="";
 var exptime="";
-var ntf_flow=0;
-const subinfo=$resource.info;
-const subtag=$resource.tag!=undefined? $resource.tag:"";
-const Base64=new Base64Code();
-const escapeRegExp = str => str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'); //处理特殊符号以便正则匹配使用
-const qxpng="https://raw.githubusercontent.com/crossutility/Quantumult-X/master/quantumult-x.png"
-var subinfo_link = {"open-url": "https://t.me/QuanX_API", "media-url" :"https://shrtm.nu/ebAr"};
-var rwrite_link = {"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/x3o2"}
-var rwhost_link = {"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/0n5J"}
-var rule_link={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/cpHD"}
-var nan_link={"open-url":link0.split("#")[0], "media-url": qxpng}
-var sub_link={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/ebAr"}
-var subinfo_link1={"open-url":link0.split("#")[0], "media-url": "https://shrtm.nu/uo13"}
 
 //响应头流量处理部分
-if(Pinfo==1 && subinfo){
-	var sinfo=subinfo.replace(/ /g,"").toLowerCase();
-	var total="总流量: "+(parseFloat(sinfo.split("total=")[1].split(",")[0])/(1024**3)).toFixed(2)+"GB";
-	var usd="已用流量: "+((parseFloat(sinfo.split("upload=")[1].split(",")[0])+parseFloat(sinfo.split("download=")[1].split(",")[0]))/(1024**3)).toFixed(2)+"GB"
-	var left="剩余流量: "+((parseFloat(sinfo.split("total=")[1].split(",")[0])/(1024**3))-((parseFloat(sinfo.split("upload=")[1].split(",")[0])+parseFloat(sinfo.split("download=")[1].split(",")[0]))/(1024**3))).toFixed(2)+"GB"
-	if(sinfo.indexOf("expire=")!=-1){
-		var epr= new Date(parseFloat(sinfo.split("expire=")[1].split(",")[0])*1000);
-		var year=epr.getFullYear();  // 获取完整的年份(4位,1970)
-		var mth=epr.getMonth()+1 < 10 ? '0'+(epr.getMonth()+1):(epr.getMonth()+1);  // 获取月份(0-11,0代表1月,用的时候记得加上1)
-		var day=epr.getDate()<10 ? "0"+(epr.getDate()):epr.getDate(); 
-		epr="过期时间: "+year+"-"+mth+"-"+day
-		} else{
-			epr=""; //"过期时间: ✈️ 未提供該信息" //没过期时间的显示订阅链接
-		}
-	var message=total+"\n"+usd+", "+left;
-	ntf_flow=1;
-	$notify("流量信息: ⟦"+subtag+"⟧", epr, message,subinfo_link)
+function SubFlow(){
+	if(Pinfo==1 && subinfo){
+		var sinfo=subinfo.replace(/ /g,"").toLowerCase();
+		var total="总流量: "+(parseFloat(sinfo.split("total=")[1].split(",")[0])/(1024**3)).toFixed(2)+"GB";
+		var usd="已用流量: "+((parseFloat(sinfo.split("upload=")[1].split(",")[0])+parseFloat(sinfo.split("download=")[1].split(",")[0]))/(1024**3)).toFixed(2)+"GB"
+		var left="剩余流量: "+((parseFloat(sinfo.split("total=")[1].split(",")[0])/(1024**3))-((parseFloat(sinfo.split("upload=")[1].split(",")[0])+parseFloat(sinfo.split("download=")[1].split(",")[0]))/(1024**3))).toFixed(2)+"GB"
+		if(sinfo.indexOf("expire=")!=-1){
+			var epr= new Date(parseFloat(sinfo.split("expire=")[1].split(",")[0])*1000);
+			var year=epr.getFullYear();  // 获取完整的年份(4位,1970)
+			var mth=epr.getMonth()+1 < 10 ? '0'+(epr.getMonth()+1):(epr.getMonth()+1);  // 获取月份(0-11,0代表1月,用的时候记得加上1)
+			var day=epr.getDate()<10 ? "0"+(epr.getDate()):epr.getDate(); 
+			epr="过期时间: "+year+"-"+mth+"-"+day
+			} else{
+				epr=""; //"过期时间: ✈️ 未提供該信息" //没过期时间的显示订阅链接
+			}
+		var message=total+"\n"+usd+", "+left;
+		ntf_flow=1;
+		$notify("流量信息: ⟦"+subtag+"⟧", epr, message,subinfo_link)
+	}
 }
 
 if(type0=="Subs-B64Encode"){
@@ -217,12 +221,13 @@ if(flag==3){
 	}
 	total=TagCheck_QX(total)
     total=total.join("\n");
+//$notify("Final","test",total)
 	if(flag==1){
 		total=Base64.encode(total)} //强制 base64
 	$done({content : total});
 }
 
-//flowcheck
+//flowcheck-fake-server
 function flowcheck(cnt){
 	for(var i=0;i<cnt.length;i++){
 	var item=cnt[i];
@@ -586,7 +591,7 @@ function SubsEd2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 			node = SS2QX(list0[i],Pudp,Ptfo)
 		}else if(type=="trojan"){
 			node = TJ2QX(list0[i],Pudp,Ptfo,Pcert,Ptls13)
-		}else if(type=="https"){ //subs,Ptfo,Pcert,Ptls13
+		}else if(type=="https"&&listi.indexOf("@")!=-1){ //subs,Ptfo,Pcert,Ptls13
 			node = HPS2QX(list0[i],Ptfo,Pcert,Ptls13)
 		}else if(QuanXK.some(QuanXCheck)){
 			node = list0[i]
@@ -636,7 +641,7 @@ function Subs2QX(subs,Pudp,Ptfo,Pcert,Ptls13){
 			node = SSD2QX(list0[i],Pudp,Ptfo)
 		}else if(type=="trojan"){
 			node = TJ2QX(list0[i],Pudp,Ptfo,Pcert,Ptls13)
-		}else if(type=="https"){
+		}else if(type=="https"&&listi.indexOf("@")!=-1){
 			node = HPS2QX(list0[i],Ptfo,Pcert,Ptls13)
 		}else if(QuanXK.some(QuanXCheck)){
 			//$notify("QX")
@@ -703,7 +708,6 @@ function TagCheck_QX(content){
 //http=example.com:443, username=name, password=pwd, over-tls=true, tls-host=example.com, tls-verification=true, tls13=true, fast-open=false, udp-relay=false, tag=http-tls-02
 //HTTPS 类型 URI 转换成 QUANX 格式
 function HPS2QX(subs,Ptfo,Pcert,Ptls13){
-
 	var server=Base64.decode(subs.replace("https://","")).trim().split("\u0000")[0];
 	var nss=[]
 	if(server!=""){
