@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-09-09 19:59⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-09-16 11:29⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: @Shawn_KOP_bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -149,8 +149,8 @@ function SubFlow() {
     if (Pinfo == 1 && subinfo) {
         var sinfo = subinfo.replace(/ /g, "").toLowerCase();
         var total = "总流量: " + (parseFloat(sinfo.split("total=")[1].split(",")[0]) / (1024 ** 3)).toFixed(2) + "GB";
-        var usd = "已用流量: " + ((parseFloat(sinfo.split("upload=")[1].split(",")[0]) + parseFloat(sinfo.split("download=")[1].split(",")[0])) / (1024 ** 3)).toFixed(2) + "GB"
-        var left = "剩余流量: " + ((parseFloat(sinfo.split("total=")[1].split(",")[0]) / (1024 ** 3)) - ((parseFloat(sinfo.split("upload=")[1].split(",")[0]) + parseFloat(sinfo.split("download=")[1].split(",")[0])) / (1024 ** 3))).toFixed(2) + "GB"
+        var usd = "已用流量: " + ((parseFloat(sinfo.indexOf("upload")!=-1?sinfo.split("upload=")[1].split(",")[0]:"0") + parseFloat(sinfo.split("download=")[1].split(",")[0])) / (1024 ** 3)).toFixed(2) + "GB"
+        var left = "剩余流量: " + ((parseFloat(sinfo.split("total=")[1].split(",")[0]) / (1024 ** 3)) - ((parseFloat(sinfo.indexOf("upload")!=-1?sinfo.split("upload=")[1].split(",")[0]:"0") + parseFloat(sinfo.split("download=")[1].split(",")[0])) / (1024 ** 3))).toFixed(2) + "GB"
         if (sinfo.indexOf("expire=") != -1) {
             var epr = new Date(parseFloat(sinfo.split("expire=")[1].split(",")[0]) * 1000);
             var year = epr.getFullYear();  // 获取完整的年份(4位,1970)
@@ -1275,19 +1275,23 @@ function emoji_handle(servers, Pemoji) {
 function Surge2QX(conf) {
     var QXlist = conf.split("\n").map(isSurge).filter(Boolean)
     var Nlist = []
+    var node=""
     for (var i = 0; i < QXlist.length; i++) {
         var cnt = QXlist[i];
         if (cnt.split("=")[1].split(",")[0].indexOf("trojan") != -1) {
-            Nlist.push(Strojan2QX(cnt))//surge 3的trojan
+            node = Strojan2QX(cnt)//surge 3的trojan
         } else if (cnt.split("=")[1].split(",")[0].indexOf("http") != -1) {
-            Nlist.push(Shttp2QX(cnt)) //surge 3的http
+            node = Shttp2QX(cnt) //surge 3的http
         } else if (cnt.split("=")[1].split(",")[0].indexOf("vmess") != -1) {
-            Nlist.push(SVmess2QX(cnt)) //surge 3的Vmess
+            node = SVmess2QX(cnt) //surge 3的Vmess
         } else if (cnt.split("=")[1].split(",")[0].indexOf("ss") != -1) {
-            Nlist.push(SSS2QX(cnt)) //surge 3的SS
+            node = SSS2QX(cnt) //surge 3的SS
         } else if (cnt.split("=")[1].split(",")[0].indexOf("custom") != -1) {
-            Nlist.push(SCT2QX(cnt)) //surge2写法
+            node = SCT2QX(cnt) //surge2写法
         }
+        node = Pudp0 != 0 ? XUDP(node,Pudp0) : node
+        node = Ptfo0 != 0 ? XTFO(node,Ptfo0) : node
+        Nlist.push(node)
     }
     return (Nlist)
 }
@@ -1492,6 +1496,8 @@ function Clash2QX(cnt) {
     } else if (typec == "http"){
       node = CH2QX(node)
     }
+    node = Pudp0 != 0 ? XUDP(node,Pudp0) : node
+    node = Ptfo0 != 0 ? XTFO(node,Ptfo0) : node
     nodelist.push(node)
   }
   return nodelist.join("\n")
