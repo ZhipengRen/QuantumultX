@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-12-27 13:49⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2020-12-29 22:59⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: @Shawn_KOP_bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -64,7 +64,7 @@
 ⦿ 通知参数 𝗻𝘁𝗳=0/1, 用于 关闭/打开 资源解析器的提示通知
   ❖ 𝗿𝗲𝘄𝗿𝗶𝘁𝗲/𝗳𝗶𝗹𝘁𝗲𝗿 默认“开启”通知提示, 以防规则误删除
   ❖ 𝘀𝗲𝗿𝘃𝗲𝗿 资源解析则默认”关闭“通知提示
-⦿ 类型参数 type=domain-set/rule/module/list
+⦿ 类型参数 𝐭𝐲𝐩𝐞=𝐝𝐨𝐦𝐚𝐢𝐧-𝐬𝐞𝐭/𝐫𝐮𝐥𝐞/𝐦𝐨𝐝𝐮𝐥𝐞/𝐥𝐢𝐬𝐭/𝐧𝐨𝐝𝐞𝐬
   ❖ 当解析器未能正确识别类型时, 可尝试使用此参数强制指定
 ----------------------------------------------------------
 */
@@ -82,21 +82,20 @@ resource_parser_url = https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/mas
 ------------------------------
 */
 
+
+
+// 解析器正常使用，調試註釋此部分
+
 let [link0, content0, subinfo] = [$resource.link, $resource.content, $resource.info]
-
-
 const subtag = $resource.tag != undefined ? $resource.tag : "";
-// 非 raw 链接的沙雕情形
+////// 非 raw 链接的沙雕情形
 content0 = content0.indexOf("DOCTYPE html") != -1 && link0.indexOf("github.com") != -1 ? ToRaw(content0) : content0 ;
 
-//debug
-//const $resource={}
-//const $done=function(snt){return snt}
-//parameters
+//正常使用部分，調試註釋此部分
 
-var para = (link0.indexOf("http") != -1 && link0.indexOf("://") != -1) ? link0 : link0 + content0.split("\n")[0];
+var para = /^(http|https)\:\/\//.test(link0) ? link0 : content0.split("\n")[0];
 var para1 = para.slice(para.indexOf("#") + 1) //防止参数中其它位置也存在"#"
-var mark0 = para.indexOf("#") != -1 ? true : false;
+var mark0 = para.indexOf("#") != -1 ? true : false; //是否有參數需要解析
 var Pinfo = mark0 && para1.indexOf("info=") != -1 ? para1.split("info=")[1].split("&")[0] : 0;
 var ntf_flow = 0;
 //常用量
@@ -148,22 +147,31 @@ var Pcnt =  para1.indexOf("cnt=") != -1 ? para1.split("cnt=")[1].split("&")[0] :
 let [flow, exptime, errornode, total] = "";
 
 var typeU = para1.indexOf("type=") != -1 ? para1.split("type=")[1].split("&")[0] : "";
-var type0 = Type_Check(content0); //  类型判断
-//$notify(type0,"hh")
 
+
+
+
+var type0=""
 //flag=1,2,3分别为 server、rewrite、rule 类型
 var flag = 1
 
-try {
-  total = ResourceParse();
-  
-} catch (err) {
+function Parser() {
+  try {
+    type0 = Type_Check(content0); //  类型判断
+    //$notify(type0,"hh")
+    total = ResourceParse();
+    
+  } catch (err) {
     $notify("❌ 解析出现错误", "⚠️ 请点击发送链接反馈", err, bug_link);
+  }
+  //$notify("","",total)
+  //$done({ content: total });
 }
 
-//$notify("",total.split("\n")[0].split(" "),total.split("\n")[0])
-
-$done({ content: total });
+if (typeof($resource)!=="undefined") {
+  Parser()
+  $done({ content: total })
+}
 
 
 /**
@@ -334,38 +342,42 @@ function Type_Check(subs) {
     }  else if (ClashK.some(NodeCheck) || typeU == "clash"){ // Clash 类型节点转换
       type = "Clash";
       content0 = Clash2QX(subs)
-    } else if ((subi.indexOf("hostname=") != -1 || RewriteK.some(RewriteCheck) || subi.indexOf("pattern=") != -1) && subs.indexOf("[Proxy]") == -1 && subs.indexOf("[server_local]") == -1 && para1.indexOf("dst=filter")==-1 && subi.indexOf("securehostname") == -1 && typeU != "module") {
+    } else if ((subi.indexOf("hostname=") != -1 || RewriteK.some(RewriteCheck) || subi.indexOf("pattern=") != -1) && !/\[(Proxy|filter_local)\]/.test(subs) && para1.indexOf("dst=filter")==-1 && subi.indexOf("securehostname") == -1 && typeU != "module" && typeU != "nodes") {
       type = "rewrite" //Quantumult X 类型 rewrite/ Surge Script/
-    } else if ( ((ModuleK.some(RewriteCheck) || para1.indexOf("dst=rewrite") != -1) && (para1.indexOf("dst=filter") == -1) && subs.indexOf("[Proxy]") == -1) || typeU == "module") { // Surge 类型 module /rule-set(含url-regex) 类型
+    } else if ( (((ModuleK.some(RewriteCheck) || para1.indexOf("dst=rewrite") != -1) && (para1.indexOf("dst=filter") == -1) && subs.indexOf("[Proxy]") == -1) || typeU == "module") && typeU != "nodes") { // Surge 类型 module /rule-set(含url-regex) 类型
       type = "sgmodule"
-    } else if ((RuleK.some(RuleCheck) && subs.indexOf(html) == -1 && subs.indexOf("[Proxy]") == -1 && subs.indexOf("[server_local]") == -1) || typeU == "rule" ||para1.indexOf("dst=filter")!=-1) {
+    } else if (((RuleK.some(RuleCheck) && subs.indexOf(html) == -1 && !/\[(Proxy|server_local)\]/.test(subs)) || typeU == "rule" || para1.indexOf("dst=filter")!=-1) && typeU != "nodes") {
       type = "Rule";
-    } else if ((DomainK.some(RuleCheck) || typeU == "domain-set") && subs.indexOf("[Proxy]") == -1 ) {
+    } else if ((DomainK.some(RuleCheck) || typeU == "domain-set") && subs.indexOf("[Proxy]") == -1 && typeU != "nodes") {
       type = "Rule";
       content0 = Domain2Rule(content0) // 转换 domain-set
-    } else if (subsn.length >= 1 && SubK2.some(NodeCheck) && subs.indexOf("[Proxy]") == -1 && subs.indexOf("[filter_local]") == -1) { //未b64加密的多行URI 组合订阅
+    } else if (subsn.length >= 1 && SubK2.some(NodeCheck) && !/\[(Proxy|filter_local)\]/.test(subs)) { //未b64加密的多行URI 组合订阅
       type = "Subs"
     } else if (SubK.some(NodeCheck)) {  //b64加密的订阅类型
       type = "Subs-B64Encode"
-    } else if ((subi.indexOf("tag=") != -1 && QuanXK.some(NodeCheck) && subs.indexOf("[Proxy]") == -1 && subs.indexOf("[filter_local]") == -1) || typeU =="list") {
+    } else if ((subi.indexOf("tag=") != -1 && QuanXK.some(NodeCheck) && !/\[(Proxy|filter_local)\]/.test(subs)) || typeU =="list") {
       type = "Subs" // QuanX list
     } else if (subs.indexOf("[Proxy]") != -1) {
       type = "Surge"; // Surge Profiles
-    } else if ((SurgeK.some(NodeCheck)  && subs.indexOf("[Proxy]") == -1 && subs.indexOf("[filter_local]") == -1) || typeU == "list") {
+    } else if ((SurgeK.some(NodeCheck)  && !/\[(Proxy|filter_local)\]/.test(subs)) || typeU == "list") {
       type = "Subs" // Surge proxy list
     } else if (subs.indexOf("[server_local]") != -1) {
       type = "QuanX"  // QuanX Profile
+    } else if(typeU == "nodes") {
+      type = "Subs-B64Encode"
     }
+  // 用于通知判断类型，debug
+  if(typeU == "X"){
+    $notify(type,"",content0)
+  }
     return type
 }
 
 // 检查节点名字(重复以及空名)等QuanX 不允许的情形
 function TagCheck_QX(content) {
     var Olist = content
-    var Nlist = []
-    var nmlist = []
-    var nulllist = []; //记录空名字节点
-    var duplist = [];  //记录重名节点
+    var [Nlist, nmlist] = [ [], [] ]
+    var [nulllist,duplist] = [ [], [] ]; //记录空名字节点&重名节点
     var no = 0;
     for (var i = 0; i < Olist.length; i++) {
         var item = Olist[i] ? Olist[i] : ""
@@ -445,7 +457,7 @@ function URX2QX(subs) {
 function SCP2QX(subs) {
     var nrw = []
     var rw = ""
-    subs = subs.split("\n")
+    subs = subs.split("\n").map(x => x.trim().replace(/\s+/g," "))
     for (var i = 0; i < subs.length; i++) {
         if (subs[i].slice(0, 8) == "hostname") {
             hn = subs[i].replace(/\%.*\%/g, "")
@@ -475,8 +487,8 @@ function SCP2QX(subs) {
               nrw.push(rw)
             }
           } else if (subs[i].indexOf(" 302") != -1 || subs[i].indexOf(" 307") != -1) { //rewrite 302&307 复写
-            tpe = subs[i].indexOf(" 302") != -1? "302":"307"
-            rw = subs[i].split(" ")[0] + " url " + tpe + " " + subs[i].split(" ")[1].trim()
+            //tpe = subs[i].indexOf(" 302") != -1? "302":"307"
+            rw = subs[i].split(" ")[0] + " url " + subs[i].split(" ")[2] + " " + subs[i].split(" ")[1].trim()
             //if(rw.indexOf("307")!=-1) {$notify("XX",subs[i],rw.split(" "))}
             nrw.push(rw)
           } else if(subs[i].split(" ")[2] == "header") { // rewrite header 类型
@@ -491,7 +503,7 @@ function SCP2QX(subs) {
             type = subs[i].replace(/\s+/g," ").split(" ")[0]
             js = subs[i].split("script-path")[1].split("=")[1].split(",")[0]
             ptn = subs[i].replace(/\s+/g," ").split(" ")[1]
-            subsi = subs[i].replace(/ /g,"").replace(/\=true/g,"=1")
+    subsi = subs[i].replace(/ /g,"").replace(/\=true/g,"=1")
             if (type == "http-response" && subsi.indexOf("requires-body=1") != -1) {
               type = "script-response-body "
             } else if (type == "http-response" && subsi.indexOf("requires-body=1") == -1) {
@@ -1393,7 +1405,7 @@ function emoji_handle(servers, Pemoji) {
             var oname = ser0[i].split("tag=")[1].trim();
             var hd = ser0[i].split("tag=")[0];
             var nname = oname;//emoji_del(oname);
-            var Lmoji = { "🏳️‍🌈": ["流量", "时间", "应急", "过期", "Bandwidth", "expire"], "🇦🇹": ["奥地利", "Austria", "维也纳"], "🇦🇺": ["AU", "Australia", "Sydney", "澳大利亚", "澳洲", "墨尔本", "悉尼" ,"澳"], "🇧🇪": ["BE", "比利时"], "🇧🇬": ["保加利亚", "Bulgaria"], "🇧🇷": ["BR", "Brazil", "巴西", "圣保罗"], "🇨🇦": ["Canada","CANADA", "Waterloo", "加拿大", "蒙特利尔", "温哥华", "楓葉", "枫叶", "滑铁卢", "多伦多"], "🇨🇭": ["瑞士", "苏黎世", "Switzerland"], "🇩🇪": ["DE", "German", "GERMAN", "德国", "德國", "法兰克福","京德"], "🇩🇰": ["丹麦"], "🇪🇸": ["ES", "西班牙", "Spain"], "🇪🇺": ["EU", "欧盟", "欧罗巴"], "🇫🇮": ["Finland", "芬兰", "赫尔辛基"], "🇫🇷": ["FR", "France", "法国", "法國", "巴黎"], "🇬🇧": ["UK", "GB", "England", "United Kingdom", "英国", "伦敦", "英"], "🇲🇴": ["MO", "Macao", "澳门", "CTM"], "🇰🇿": ["哈萨克斯坦"], "🇭🇺": ["匈牙利", "Hungary"], "🇭🇰": ["HK", "Hongkong", "Hong Kong", "HongKong", "HONG KONG","香港", "深港", "沪港", "呼港", "HKT", "HKBN", "HGC", "WTT", "CMI", "穗港", "京港", "港"], "🇮🇩": ["Indonesia", "印尼", "印度尼西亚", "雅加达"], "🇮🇪": ["Ireland", "IRELAND", "爱尔兰", "都柏林"], "🇮🇳": ["India", "INDIA","印度", "孟买", "Mumbai"], "🇰🇵": ["KP", "朝鲜"], "🇰🇷": ["KR", "Korea", "KOR", "韩国", "首尔", "韩", "韓"], "🇱🇻": ["Latvia", "Latvija", "拉脱维亚"], "🇲🇽️": ["MEX", "MX", "墨西哥"], "🇲🇾": ["MY", "Malaysia","MALAYSIA", "马来西亚", "吉隆坡"], "🇳🇱": ["NL", "Netherlands", "荷兰", "荷蘭", "尼德蘭", "阿姆斯特丹"], "🇵🇭": ["PH", "Philippines", "菲律宾"], "🇷🇴": ["RO", "罗马尼亚"], "🇷🇺": ["RU", "Russia", "俄罗斯", "俄国", "俄羅斯", "伯力", "莫斯科", "圣彼得堡", "西伯利亚", "新西伯利亚", "京俄", "杭俄"], "🇸🇦": ["沙特", "迪拜"], "🇸🇪": ["SE", "Sweden"], "🇸🇬": ["SG", "Singapore","SINGAPORE", "新加坡", "狮城", "沪新", "京新", "泉新", "穗新", "深新", "杭新", "广新"], "🇹🇭": ["TH", "Thailand", "泰国", "泰國", "曼谷"], "🇹🇷": ["TR", "Turkey", "土耳其", "伊斯坦布尔"], "🇹🇼": ["TW", "Taiwan","TAIWAN", "台湾", "台北", "台中", "新北", "彰化", "CHT", "台", "HINET"], "🇺🇸": ["US", "USA", "America", "United States", "美国", "美", "京美", "波特兰", "达拉斯", "俄勒冈", "凤凰城", "费利蒙", "硅谷", "矽谷", "拉斯维加斯", "洛杉矶", "圣何塞", "圣克拉拉", "西雅图", "芝加哥", "沪美", "哥伦布", "纽约"], "🇻🇳": ["VN", "越南", "胡志明市"], "🇮🇹": ["Italy", "IT", "Nachash", "意大利", "米兰", "義大利"], "🇿🇦": ["South Africa", "南非"], "🇦🇪": ["United Arab Emirates", "阿联酋"], "🇯🇵": ["JP", "Japan","JAPAN", "日", "日本", "东京", "大阪", "埼玉", "沪日", "穗日", "川日", "中日", "泉日", "杭日", "深日", "辽日", "广日"], "🇦🇷": ["AR", "阿根廷"], "🇳🇴": ["Norway", "挪威", "NO"], "🇨🇳": ["CN", "China", "回国", "中国", "江苏", "北京", "上海", "广州", "深圳", "杭州", "徐州", "青岛", "宁波", "镇江", "back"] }
+            var Lmoji = { "🏳️‍🌈": ["流量", "时间", "应急", "过期", "Bandwidth", "expire"], "🇦🇹": ["奥地利", "Austria", "维也纳"], "🇦🇺": ["AU", "Australia", "Sydney", "澳大利亚", "澳洲", "墨尔本", "悉尼" ,"土澳"], "🇧🇪": ["BE", "比利时"], "🇧🇬": ["保加利亚", "Bulgaria"], "🇧🇷": ["BR", "Brazil", "巴西", "圣保罗"], "🇨🇦": ["Canada","CANADA", "Waterloo", "加拿大", "蒙特利尔", "温哥华", "楓葉", "枫叶", "滑铁卢", "多伦多"], "🇨🇭": ["瑞士", "苏黎世", "Switzerland"], "🇩🇪": ["DE", "German", "GERMAN", "德国", "德國", "法兰克福","京德"], "🇩🇰": ["丹麦"], "🇪🇸": ["ES", "西班牙", "Spain"], "🇪🇺": ["EU", "欧盟", "欧罗巴"], "🇫🇮": ["Finland", "芬兰", "赫尔辛基"], "🇫🇷": ["FR", "France", "法国", "法國", "巴黎"], "🇬🇧": ["UK", "GB", "England", "United Kingdom", "英国", "伦敦", "英"], "🇲🇴": ["MO", "Macao", "澳门", "CTM"], "🇰🇿": ["哈萨克斯坦"], "🇭🇺": ["匈牙利", "Hungary"], "🇭🇰": ["HK", "Hongkong", "Hong Kong", "HongKong", "HONG KONG","香港", "深港", "沪港", "呼港", "HKT", "HKBN", "HGC", "WTT", "CMI", "穗港", "京港", "港"], "🇮🇩": ["Indonesia", "印尼", "印度尼西亚", "雅加达"], "🇮🇪": ["Ireland", "IRELAND", "爱尔兰", "都柏林"], "🇮🇳": ["India", "INDIA","印度", "孟买", "Mumbai"], "🇰🇵": ["KP", "朝鲜"], "🇰🇷": ["KR", "Korea", "KOR", "韩国", "首尔", "韩", "韓"], "🇱🇻": ["Latvia", "Latvija", "拉脱维亚"], "🇲🇽️": ["MEX", "MX", "墨西哥"], "🇲🇾": ["MY", "Malaysia","MALAYSIA", "马来西亚", "吉隆坡"], "🇳🇱": ["NL", "Netherlands", "荷兰", "荷蘭", "尼德蘭", "阿姆斯特丹"], "🇵🇭": ["PH", "Philippines", "菲律宾"], "🇷🇴": ["RO", "罗马尼亚"], "🇷🇺": ["RU", "Russia", "俄罗斯", "俄国", "俄羅斯", "伯力", "莫斯科", "圣彼得堡", "西伯利亚", "新西伯利亚", "京俄", "杭俄"], "🇸🇦": ["沙特", "迪拜"], "🇸🇪": ["SE", "Sweden"], "🇸🇬": ["SG", "Singapore","SINGAPORE", "新加坡", "狮城", "沪新", "京新", "泉新", "穗新", "深新", "杭新", "广新"], "🇹🇭": ["TH", "Thailand", "泰国", "泰國", "曼谷"], "🇹🇷": ["TR", "Turkey", "土耳其", "伊斯坦布尔"], "🇹🇼": ["TW", "Taiwan","TAIWAN", "台湾", "台北", "台中", "新北", "彰化", "CHT", "台", "HINET"], "🇺🇸": ["US", "USA", "America", "United States", "美国", "美", "京美", "波特兰", "达拉斯", "俄勒冈", "凤凰城", "费利蒙", "硅谷", "矽谷", "拉斯维加斯", "洛杉矶", "圣何塞", "圣克拉拉", "西雅图", "芝加哥", "沪美", "哥伦布", "纽约"], "🇻🇳": ["VN", "越南", "胡志明市"], "🇮🇹": ["Italy", "IT", "Nachash", "意大利", "米兰", "義大利"], "🇿🇦": ["South Africa", "南非"], "🇦🇪": ["United Arab Emirates", "阿联酋"], "🇯🇵": ["JP", "Japan","JAPAN", "日", "日本", "东京", "大阪", "埼玉", "沪日", "穗日", "川日", "中日", "泉日", "杭日", "深日", "辽日", "广日"], "🇦🇷": ["AR", "阿根廷"], "🇳🇴": ["Norway", "挪威", "NO"], "🇨🇳": ["CN", "China", "回国", "中国", "江苏", "北京", "上海", "广州", "深圳", "杭州", "徐州", "青岛", "宁波", "镇江", "back"] }
             if (Pemoji == 1) {
                 str1 = JSON.stringify(Lmoji)
                 aa = JSON.parse(str1)
